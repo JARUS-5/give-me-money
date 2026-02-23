@@ -1,4 +1,4 @@
-from typing import Any, Dict, Set, DefaultDict
+from typing import Any, Dict, Set, DefaultDict, Union, List
 from collections import defaultdict
 from src.pubsub.interfaces import IPublisher, ISubscriber
 
@@ -15,13 +15,22 @@ class OptionChainData(IPublisher):
         # Keep track of all raw subscribers so we can easily remove them later.
         self._all_subscribers: Set[ISubscriber] = set()
 
-    def add_subscriber(self, subscriber: ISubscriber, strike: str = None):
+    def add_subscriber(self, subscriber: ISubscriber, strikes: Union[str, List[str]] = None):
         """
         Subscribe to OptionChain updates.
-        If strike is None or empty, the subscriber will receive data for all strikes.
+        If strikes is None or empty, the subscriber will receive data for all strikes.
         """
-        key = strike if strike else ""
-        self._subscribers[key].add(subscriber)
+        if not strikes:
+            keys = [""]
+        elif isinstance(strikes, str):
+            keys = [strikes]
+        else:
+            keys = strikes
+            
+        for key in keys:
+            k = key if key else ""
+            self._subscribers[k].add(subscriber)
+            
         self._all_subscribers.add(subscriber)
 
     def remove_subscriber(self, subscriber: ISubscriber):

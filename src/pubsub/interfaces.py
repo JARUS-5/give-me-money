@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any, Dict, Union, List
 
 
 class ISubscriber(ABC):
@@ -19,8 +19,8 @@ class IPublisher(ABC):
     """
     
     @abstractmethod
-    def add_subscriber(self, subscriber: ISubscriber, strike: str = None):
-        """Add a new subscriber, optionally filtering by strike."""
+    def add_subscriber(self, subscriber: ISubscriber, strikes: Union[str, List[str]] = None):
+        """Add a new subscriber, optionally filtering by one or more strikes."""
         pass
 
     @abstractmethod

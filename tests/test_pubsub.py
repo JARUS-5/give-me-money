@@ -97,3 +97,30 @@ def test_notify_empty_data(publisher):
     publisher.notify({})
     assert len(sub.received_data) == 0
 
+
+def test_add_subscriber_with_multiple_strikes(publisher):
+    sub = MockSubscriber()
+    
+    # Subscribe using list of strikes
+    publisher.add_subscriber(sub, strikes=["23400", "23500"])
+    
+    data = {
+        "underlying_ltp": 25641.7,
+        "strikes": {
+            "23400": {"CE": {"ltp": 2200}},
+            "23450": {"CE": {"ltp": 2080}},
+            "23500": {"CE": {"ltp": 2000}}
+        }
+    }
+
+    publisher.notify(data)
+
+    # Should only receive 2 notifications/updates for the 2 subscribed strikes
+    assert len(sub.received_data) == 2
+    
+    received_strikes = [list(update["strikes"].keys())[0] for update in sub.received_data]
+    assert "23400" in received_strikes
+    assert "23500" in received_strikes
+    assert "23450" not in received_strikes
+
+
