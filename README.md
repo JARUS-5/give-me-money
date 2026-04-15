@@ -1,4 +1,4 @@
-# Give Me Money - Trading Architecture
+# Trading Architecture
 
 This project is a Python-based trading system architecture designed to handle live market data via a Publisher/Subscriber model, abstracted via a flexible Broker Client Factory.
 
